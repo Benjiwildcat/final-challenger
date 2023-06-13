@@ -12,8 +12,8 @@ const LoginForm = () => {
   const [login, { error }] = useMutation(LOGIN);
 
   const handleInputChange = (event) => {
-    //   const { name, value } = event.target;
-    //   setUserFormData({ ...userFormData, [name]: value });
+    const { name, value } = event.target;
+    setUserFormData({ ...userFormData, [name]: value });
   };
 
   const handleFormSubmit = async (event) => {

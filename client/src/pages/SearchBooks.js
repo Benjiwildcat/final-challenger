@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { SAVED_BOOKS } from '../utils/mutation';
+import { useMutation } from '@apollo/client';
 import {
   Container,
   Col,
@@ -17,6 +19,7 @@ const SearchBooks = () => {
   const [searchedBooks, setSearchedBooks] = useState([]);
   // create state for holding our search field data
   const [searchInput, setSearchInput] = useState('');
+  const [saveBook, { error }] = useMutation(SAVED_BOOKS);
 
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
@@ -64,20 +67,13 @@ const SearchBooks = () => {
     // find the book in `searchedBooks` state by the matching id
     const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
 
-    // get token
-    const token = Auth.loggedIn() ? Auth.getToken() : null;
-
-    if (!token) {
-      return false;
-    }
 
     try {
-      const response = await saveBook(bookToSave, token);
-
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
-
+      // Execute mutation and pass in defined parameter data as variables
+      const { data } = await saveBook({
+        variables: { ...bookToSave },
+      });
+      window.location.reload();
       // if book successfully saves to user's account, save book id to state
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);
     } catch (err) {
